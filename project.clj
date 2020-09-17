@@ -8,8 +8,7 @@
                  [reagent "0.10.0"]
                  [metosin/reitit "0.5.5"]
                  [re-frame "0.12.0"]
-                 [day8.re-frame/tracing "0.5.5"]
-                 [com.fulcrologic/guardrails "0.0.12"]]
+                 [day8.re-frame/tracing "0.5.5"]]
 
   :plugins [[lein-shadow "0.2.0"]
             [lein-garden "0.3.0"]
@@ -17,7 +16,7 @@
 
   :min-lein-version "2.9.0"
 
-  :jvm-opts ["-Xmx1G" "-Dguardrails.enabled"]
+  :jvm-opts ["-Xmx1G"]
 
   :source-paths ["src" "../injectable/src" "../pluggable/src"]
 
@@ -41,7 +40,7 @@
                                                           day8.re-frame-10x.preload]}}
                                :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
                                                                           day8.re-frame.tracing.trace-enabled? true}
-                                                        :external-config {:guardrails {}}}}
+                                                        :external-config {}}}
                                :release {:build-options
                                          {:ns-aliases
                                           {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
