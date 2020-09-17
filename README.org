@@ -1,0 +1,2 @@
+* What
+~pluggable-web~ is a collection of pluggable plugins to develop web applications

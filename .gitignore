@@ -1,0 +1,26 @@
+# Local
+*.html
+/package-lock.json
+/resources/public/vendor/semantic/
+/semantic/
+
+
+/out/
+/resources/public/js/compiled/
+/target/
+/*-init.clj
+/*.log
+
+# Leiningen
+/.lein-*
+/.nrepl-port
+
+# Node.js dependencies
+/node_modules/
+
+# shadow-cljs cache, port files
+/shadow-cljs.edn
+/.shadow-cljs/
+
+# clj-kondo cache
+/.clj-kondo/.cache
