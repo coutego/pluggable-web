@@ -1,2 +1,15 @@
 * What
-~pluggable-web~ is a collection of pluggable plugins to develop web applications
+~pluggable-web~ is a collection of pluggable plugins to develop web
+applications + a sample application to show how the development model works. 
+This library is in its very early stages.
+
+* Setup
+This library includes a minimal sample web application. The project uses the
+libraries ~injectable~ and ~pluggable~ for which there are no packaged releases
+yet. For the time being, you need to checkout those three projects in the same
+local directory, since ~pluggable-web~ directly references the source files
+("../injectable/src" and "../pluggable/src").
+
+Once you have downloaded the three projects, you will need to do an ~npm install~
+and then a ~lein dev~. That should launch the web application on port 8280 and
+the shadow-cljs console on port 9630.
