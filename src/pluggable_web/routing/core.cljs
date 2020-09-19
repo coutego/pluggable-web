@@ -38,9 +38,9 @@
 (defn- ui-home-page []
   [:div
    [:h1 "This is the homepage"]
-   [:div (str "No content has been defined. You need to set the app main page"
+   [:p (str "No content has been defined. You need to set the app main page"
               " by defining a ::pluggable-web.routing.core/home-page extension")]
-   [:div
+   [:p
     [:a {:href (rfe/href ::about-page)} "Go to test about page"]]])
 
 (defn- about-page []
