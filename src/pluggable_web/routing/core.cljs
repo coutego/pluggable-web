@@ -108,7 +108,6 @@
 
 (def plugin
   {:id         ::routing
-   ;; :loader     #'loader
    :beans      {:main-component [vector #'current-page ::router :ui-page-template]
                 ::router        {:constructor [#'create-router]
                                  :mutators    [[#'init-router ::routes]]}
@@ -116,7 +115,7 @@
    :extensions [{:key     ::home-page
                  :handler ext-handler-home-page
                  :doc     "Fixes the home page (route) of the application,
-                           replacing any previous defined home page"}
+                           replacing any previously defined home page"}
                 {:key     ::routes
                  :handler ext-handler-routes
                  :doc     "Adds the given list of routes to the routes of the application"}]
