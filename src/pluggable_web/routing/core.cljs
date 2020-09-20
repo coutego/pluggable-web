@@ -56,58 +56,6 @@
    set-route
    {:use-fragment true})) ;; set to false to enable HistoryAPI
 
-(defn- create-bean [kw name props]
-  (let [key  (keyword (str ::routes "--" kw))
-        val  [(fn [b] (vector name (assoc props :view b))) kw]]
-    {:key key :val val}))
-
-(defn- add-route-to-db [db r] ;; FIXME: this would be simpler if used inner beans
-  (let [h (first r)
-        props (second r)
-        view (:view props)
-        bean? (keyword? view)
-        bean (if bean? (create-bean view h props))]
-    (as-> db it
-      (if bean?
-        (-> it
-            (assoc-in [:beans (:key bean)] (:val bean))
-            (update-in [:beans ::routes] #(conj (or % [vector]) (:key bean))))
-        (-> it
-            (update-in [:beans ::routes] #(conj (or % [vector]) r)))))))
-
-(defn- add-routes-to-db [{:keys [routes] :as m} db]
-  (reduce add-route-to-db db routes))
-
-(defn read-routes [m plugin]
-  (if-let [routes (::routes plugin)]
-    (do
-      (when-not (vector? routes)
-        (throw (ex-info "Routes must be a vector" {})))
-      (update m :routes concat routes))
-    m))
-
-(defn read-home-page [m plugin]
-  (if-let [home-page (::home-page plugin)]
-    (assoc m :home-page home-page)
-    m))
-
-(defn add-home-page-to-routes [m]
-  (if-let [home-page (:home-page m)]
-    (update m :routes conj ["/home"
-                            {:name ::home-page
-                             :view home-page}])
-    m))
-
-(defn- load-plugin [m plugin]
-  (-> m
-      (read-routes plugin)
-      (read-home-page plugin)))
-
-(defn- loader [db plugins]
-  (-> (reduce load-plugin {:routes []} plugins)
-      (add-home-page-to-routes)
-      (add-routes-to-db db)))
-
 (defonce current-route (r/atom nil))
 
 (defn- init-router [routes]
@@ -123,13 +71,55 @@
     IInternalRouter
     (-current-route [_] current-route)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Extension handlers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn- create-bean [kw name props]
+  (let [key (keyword (str ::routes "--" kw))
+        val [(fn [b] (vector name (assoc props :view b))) kw]]
+    {:key key :val val}))
+
+(defn- add-route-to-db [db r] ;; FIXME: this would be simpler if used inner beans
+  (let [h     (first r)
+        props (second r)
+        view  (:view props)
+        bean? (keyword? view)
+        bean  (if bean? (create-bean view h props))]
+    (as-> db it
+      (if bean?
+        (-> it
+            (assoc-in [:beans (:key bean)] (:val bean))
+            (update-in [:beans ::routes] #(conj (or % [vector]) (:key bean))))
+        (-> it
+            (update-in [:beans ::routes] #(conj (or % [vector]) r)))))))
+
+(defn ext-handler-home-page [db vals]
+  (add-route-to-db
+   db
+   ["/home"
+    {:name ::home-page
+     :view (last vals)}]))
+
+(defn- add-routes-to-db [ db routes]
+  (reduce add-route-to-db db routes))
+
+(defn ext-handler-routes [db vals]
+  (reduce add-routes-to-db db vals))
+
 (def plugin
   {:id         ::routing
-   :loader     #'loader
+   ;; :loader     #'loader
    :beans      {:main-component [vector #'current-page ::router :ui-page-template]
                 ::router        {:constructor [#'create-router]
                                  :mutators    [[#'init-router ::routes]]}
                 ::about-page    about-page}
+   :extensions [{:key     ::home-page
+                 :handler ext-handler-home-page
+                 :doc     "Fixes the home page (route) of the application,
+                           replacing any previous defined home page"}
+                {:key     ::routes
+                 :handler ext-handler-routes
+                 :doc     "Adds the given list of routes to the routes of the application"}]
    ::routes    [["/about"
                  {:name ::about-page
                   :view ::about-page}]]
