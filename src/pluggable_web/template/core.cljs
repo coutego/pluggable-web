@@ -2,7 +2,6 @@
   (:require
    [reagent.core :as r]
    [pluggable-web.base.core :as bc]
-   [pluggable-web.core :as ap]
    [pluggable.core :as plugins]))
 
 (defn ui-top-row-entry [on-click & children]

@@ -100,7 +100,7 @@
     {:name ::home-page
      :view (last vals)}]))
 
-(defn- add-routes-to-db [ db routes]
+(defn- add-routes-to-db [db routes]
   (reduce add-route-to-db db routes))
 
 (defn ext-handler-routes [db vals]

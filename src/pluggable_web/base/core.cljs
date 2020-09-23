@@ -1,7 +1,6 @@
 (ns pluggable-web.base.core
   (:require [reagent.dom :as rdom]
-            [pluggable.core :as plug-core]
-            [pluggable-web.core :as ap]))
+            [pluggable.core :as plug-core]))
 
 (defn default-main-component []
   [:div
