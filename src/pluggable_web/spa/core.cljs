@@ -22,13 +22,11 @@
      "any of your plugins. Most likely, the reason is that your plugins have not been loaded.")]])
 
 (defn render-app! [main-component]
-  (debug "Reloading application: call to render-app")
   (let [root-el       (.getElementById js/document "app")]
     (rdom/unmount-component-at-node root-el)
     (rdom/render main-component root-el)))
 
 (defn main-component-ext-handler [db vals]
-  (println "====== in main-component-ext-handler =====")
   (let [all-vals vals
         last-val (last vals)]
     (println "All-vals: " all-vals)
@@ -45,5 +43,7 @@
    :extensions
    [{:key ::main-component
      :handler main-component-ext-handler
-     :doc "FIXME"}]
+     :doc "Sets the main component for the application, overwriting any
+           main component that could have been set by a previous plugin."}]
+
    ::main-component default-main-component})
