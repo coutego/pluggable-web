@@ -35,7 +35,7 @@
                 :builds {:app {:target :browser
                                :output-dir "resources/public/js/compiled"
                                :asset-path "/js/compiled"
-                               :modules {:app {:init-fn pluggable-web.sample-app.core/init
+                               :modules {:app {:init-fn pluggable-web.sample-app/init4
                                                :preloads [devtools.preload
                                                           day8.re-frame-10x.preload]}}
                                :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true

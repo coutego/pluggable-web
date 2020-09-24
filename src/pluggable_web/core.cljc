@@ -1,17 +1,19 @@
 (ns pluggable-web.core
-  "Utilities to build a system out of a list of plugins.
+  "Plugin that implements an extension system based on Injectable containers.
 
-   The plugins are supposed to build a map with one mandatory entry (:beans)
-   and one optional one (:loadonce-beans).
-   Both entries must be valid injectable configuration maps.
+   The plugins using this system can declare two entries, :beans and :reusable-beans
+   defining Injectable configurations. All the configurations declared on the
+   :beans and :reusable elements of the plugins will be merged to build a
+   Injectable container.
 
-   The :loadonce-beans configuration is loaded first and cached thereafter,
-   unless there is an explicit request to reload it. The :beans configuration is
-   reloaded every time."
+   The utility functions in this namespace load-plugins and push-plugins!
+   will load all the plugins, take the :beans and :reusable-beans definitions
+   and build the application from that by building an Injectable container out
+   of them."
   (:require [injectable.core :as inj]
             [pluggable.core :as plug]))
 
-(defn debug [& args] (println args))
+(defn debug [& args] (println args)) 
 
 (defn- beans-handler-impl [key db vals] (assoc db key (apply merge vals)))
 

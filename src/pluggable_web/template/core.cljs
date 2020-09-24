@@ -1,8 +1,8 @@
 (ns pluggable-web.template.core
   (:require
    [reagent.core :as r]
-   [pluggable-web.base.core :as bc]
-   [pluggable.core :as plugins]))
+   [pluggable.core :as plugins]
+   [pluggable-web.spa.core :as spa]))
 
 (defn ui-top-row-entry [on-click & children]
   (let [on-click (or on-click (fn []))]
@@ -83,8 +83,7 @@
 (def plugin
   {:id             ::template
    :loader         plugin-loader
-   :beans {:main-component [:ui-page-template default-content]
-           ::top-row       [ui-top-row
+   :beans {::top-row       [ui-top-row
                             ::app-icon
                             ::app-name
                             ::topbar-center
@@ -102,6 +101,7 @@
                                  [:span.ui.label {:style {:font-size :xx-small}} 2]]]]
            ::topbar-right [ui-login-top-row]
            :ui-page-template [ui-page-template ::top-row '?]}
+   ::spa/main-component [:ui-page-template default-content]
    ::on-logo-click #(println "on-logo-click not defined")})
 
 
