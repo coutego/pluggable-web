@@ -108,7 +108,7 @@
 
 (def plugin
   {:id         ::routing
-   :beans      {:main-component [vector #'current-page ::router :ui-page-template]
+   :beans      {:main-component [vector #'current-page ::router ::template/ui-page-template]
                 ::router        {:constructor [#'create-router]
                                  :mutators    [[#'init-router ::routes]]}
                 ::about-page    about-page}

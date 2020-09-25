@@ -77,21 +77,22 @@
                            ::topbar-center
                            ::topbar-right
                            ::on-logo-click]
-                :ui-page-template [ui-page-template ::top-row '?]}
-   ::spa/main-component [:ui-page-template default-content]
+                ::ui-page-template [ui-page-template ::top-row '?]}
+   ::spa/main-component [::ui-page-template default-content]
    ::on-logo-click      #(println "on-logo-click not defined")
 
-   ::app-icon [:i.ui.envelope.icon]
-   ::app-name [:div "Demo app"]
+   ::app-icon [:= [:i.ui.envelope.icon]]
+   ::app-name [:= [:div "Demo app"]]
 
-   ::topbar-center [:div.ui.text.container
-                    [ui-top-row-entry nil [:i.ui.upload.icon] "Upload"]
-                    [ui-top-row-entry nil [:i.ui.clock.icon] "Recent"]
-                    [ui-top-row-entry
-                     nil
-                     [:i.ui.envelope.icon]
-                     "Notifications"
-                     [:span.ui.label {:style {:font-size :xx-small}} 5]]]
+   ::topbar-center [:=
+                    [:div.ui.text.container
+                     [ui-top-row-entry nil [:i.ui.upload.icon] "Upload"]
+                     [ui-top-row-entry nil [:i.ui.clock.icon] "Recent"]
+                     [ui-top-row-entry
+                      nil
+                      [:i.ui.envelope.icon]
+                      "Notifications"
+                      [:span.ui.label {:style {:font-size :xx-small}} 5]]]]
 
-   ::topbar-right [ui-login-top-row]
+   ::topbar-right [:= [ui-login-top-row]]
    :deps [spa/plugin]})
