@@ -2,6 +2,7 @@
   (:require
    [reagent.core :as r]
    [pluggable.core :as plugins]
+   [pluggable-web.core :as pwc]
    [pluggable-web.spa.core :as spa]))
 
 (defn ui-top-row-entry [on-click & children]
@@ -58,50 +59,39 @@
 
 (defn debug [& args] (.log js/console (apply str args)))
 
-(defn set-bean [db id val]
-  (let [val (if (or (keyword? val) (symbol? val)) val [:= val])]
-    (assoc-in db [:beans id] val)))
-
-(defn process-plugin [db plugin]
-  ;; (debug "Call to template process-plugins.\nplugin = " (:id plugin)); "\ndb = " db
-  (let [{:pluggable-web.template.core/keys
-         [app-name app-icon topbar-center topbar-right plugin on-logo-click]} plugin
-         main-component (:main-component plugin)]
-    (as-> db it
-      (if app-name (set-bean it ::app-name app-name) it)
-      (if on-logo-click (set-bean it ::on-logo-click on-logo-click) it)
-      (if app-icon (set-bean it ::app-icon app-icon) it)
-      (if topbar-center (set-bean it ::topbar-center topbar-center) it)
-      (if topbar-right (set-bean it ::topbar-right topbar-right) it)
-      (if main-component (set-bean it :main-component main-component) it))))
-
-(defn plugin-loader [db plugins]
-  (reduce process-plugin db plugins))
-
 (defn default-content [] [:div "Not content..."])
 
 (def plugin
-  {:id             ::template
-   :loader         plugin-loader
-   :beans {::top-row       [ui-top-row
-                            ::app-icon
-                            ::app-name
-                            ::topbar-center
-                            ::topbar-right
-                            ::on-logo-click]
-           ::app-icon      [:= [:div "*app-icon*"]]
-           ::app-name      [:= [:div "*app-name*"]]
-           ::topbar-center [:= [:div.ui.text.container
-                                [ui-top-row-entry nil [:i.ui.upload.icon] "Upload"]
-                                [ui-top-row-entry nil [:i.ui.clock.icon] "Recent"]
-                                [ui-top-row-entry
-                                 nil
-                                 [:i.ui.envelope.icon]
-                                 "Notifications"
-                                 [:span.ui.label {:style {:font-size :xx-small}} 2]]]]
-           ::topbar-right [ui-login-top-row]
-           :ui-page-template [ui-page-template ::top-row '?]}
+  {:id         ::template
+   :extensions [(pwc/extension-keep-last ::app-icon "Application icon component")
+                (pwc/extension-keep-last ::app-name "Application name")
+                (pwc/extension-keep-last ::topbar-center "Components on the center of the topbar")
+                (pwc/extension-keep-last ::top-row "Components on the center of the topbar")
+                (pwc/extension-keep-last ::topbar-center "Components on the center of the topbar")
+                (pwc/extension-keep-last ::topbar-right "components on the right of the topbar")
+                (pwc/extension-keep-last ::on-logo-click
+                                         "callback to be called when clickin on the application icon")]
+   :beans      {::top-row [ui-top-row
+                           ::app-icon
+                           ::app-name
+                           ::topbar-center
+                           ::topbar-right
+                           ::on-logo-click]
+                :ui-page-template [ui-page-template ::top-row '?]}
    ::spa/main-component [:ui-page-template default-content]
-   ::on-logo-click #(println "on-logo-click not defined")})
+   ::on-logo-click      #(println "on-logo-click not defined")
 
+   ::app-icon [:i.ui.envelope.icon]
+   ::app-name [:div "Demo app"]
 
+   ::topbar-center [:div.ui.text.container
+                    [ui-top-row-entry nil [:i.ui.upload.icon] "Upload"]
+                    [ui-top-row-entry nil [:i.ui.clock.icon] "Recent"]
+                    [ui-top-row-entry
+                     nil
+                     [:i.ui.envelope.icon]
+                     "Notifications"
+                     [:span.ui.label {:style {:font-size :xx-small}} 5]]]
+
+   ::topbar-right [ui-login-top-row]
+   :deps [spa/plugin]})

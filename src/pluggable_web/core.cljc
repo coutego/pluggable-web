@@ -1,5 +1,6 @@
 (ns pluggable-web.core
-  "Plugin that implements an extension system based on Injectable containers.
+  "Plugin and plugin loader helper functions that implement an extension
+   system based on Injectable containers.
 
    The plugins using this system can declare two entries, :beans and :reusable-beans
    defining Injectable configurations. All the configurations declared on the
@@ -9,11 +10,27 @@
    The utility functions in this namespace load-plugins and push-plugins!
    will load all the plugins, take the :beans and :reusable-beans definitions
    and build the application from that by building an Injectable container out
-   of them."
+   of them.
+
+   The functions load-plugins push-plugins! allow for a complete solution to
+   build applications based on Pluggable, with the help of this plugin.
+
+   load-plugins is a plugin loader that takes a list of plugins, adds this plugins
+   to the baggining of the list, loads the list normally (using Pluggable loader.
+   The resulting 'db' containing the ':beans' and ':reusable-beans' is used to
+   build an Injectable container by calling Injectable build-container.
+
+   push-plugins! is similar, but caches the reloadble plugins, offering an
+   easy to use solution during development to reload plugins while keeping
+   state between reloads.
+
+   The use of load-plugins and push-plugins! offer a framework to build applications
+   based on Pluggable and Injectable."
+
   (:require [injectable.core :as inj]
             [pluggable.core :as plug]))
 
-(defn debug [& args] (println args)) 
+(defn- debug [& args] (println args))
 
 (defn- beans-handler-impl [key db vals] (assoc db key (apply merge vals)))
 
@@ -61,7 +78,6 @@
         container        (inj/create-container all-beans)]
     container))
 
-
 (defonce cached-container (atom {}))
 
 (defn push-plugins!
@@ -77,3 +93,41 @@
                                         @cached-container)))]
     (reset! cached-container new-container)
     new-container))
+
+(defn extension-keep-last
+  "Creates an plugin extension that keeps the associated value defined
+   by the last plugin and associates is to the bean with the same key
+   (or bean-key, if it is defined)"
+  [key doc & {:keys [reusable? spec bean-key]}]
+  (let [handler (fn [db vals]
+                  (assoc-in db
+                            [(if reusable? :beans :reusable-beans)
+                             key]
+                            (last vals)))
+        ret     {:key (if bean-key bean-key key)
+                 :handler handler
+                 :doc doc}
+        ret     (if spec (assoc ret :spec spec) ret)]
+    ret))
+
+(defn extension-keep-list
+  "Creates an plugin extension that keeps all the associated values defined
+   by all the plugins on a unified list and associates is to the bean with
+   the same key (or bean-key, if it is defined). The values must be passed to
+   the extension as a vector."
+  [key doc & {:keys [reusable? spec bean-key]}]
+  (let [handler (fn [db vals]
+                  (if (not (or (nil? vals) (vector? vals)))
+                    (throw (ex-info
+                            (str
+                             "Extension " key " must be a vector")
+                            {})))
+                  (update-in db
+                             [(if reusable? :beans :reusable-beans)]
+                             key
+                             #(concat (or % []) vals)))
+        ret     {:key     (if bean-key bean-key key)
+                 :handler handler
+                 :doc     doc}
+        ret     (if spec (assoc ret :spec spec) ret)]
+    ret))
