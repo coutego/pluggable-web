@@ -70,7 +70,7 @@
                 (pwc/extension-keep-last ::topbar-center "Components on the center of the topbar")
                 (pwc/extension-keep-last ::topbar-right "components on the right of the topbar")
                 (pwc/extension-keep-last ::on-logo-click
-                                         "callback to be called when clickin on the application icon")]
+                                         "callback to be called when clicking on the application icon")]
    :beans      {::top-row [ui-top-row
                            ::app-icon
                            ::app-name
