@@ -101,7 +101,7 @@
   [key doc & {:keys [reusable? spec bean-key]}]
   (let [handler (fn [db vals]
                   (assoc-in db
-                            [(if reusable? :beans :reusable-beans)
+                            [(if reusable? :reusable-beans :beans)
                              key]
                             (last vals)))
         ret     {:key (if bean-key bean-key key)
@@ -123,7 +123,7 @@
                              "Extension " key " must be a vector")
                             {})))
                   (update-in db
-                             [(if reusable? :beans :reusable-beans)]
+                             [(if reusable? :reusable-beans :beans)]
                              key
                              #(concat (or % []) vals)))
         ret     {:key     (if bean-key bean-key key)

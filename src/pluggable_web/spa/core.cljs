@@ -2,6 +2,7 @@
  (:require [injectable.core :as inj]
            [injectable.container :as injcnt]
            [pluggable.core :as plug-core]
+           [pluggable-web.core :as pwc]
            [reagent.dom :as rdom]))
 
 (defn debug [& args] (comment (.log js/console (apply str args))))
@@ -29,8 +30,6 @@
 (defn main-component-ext-handler [db vals]
   (let [all-vals vals
         last-val (last vals)]
-    (println "All-vals: " all-vals)
-    (println "Last-val: " last-val)
     (assoc-in db [:beans ::main-component] last-val)))
 
 (def plugin
@@ -41,9 +40,8 @@
            :mutators [[render-app! ::main-component]]}}
 
    :extensions
-   [{:key ::main-component
-     :handler main-component-ext-handler
-     :doc "Sets the main component for the application, overwriting any
-           main component that could have been set by a previous plugin."}]
+   [(pwc/extension-keep-last ::main-component
+                             "Sets the main component for the application, overwriting any
+                              main component that could have been set by a previous plugin.")]
 
    ::main-component default-main-component})

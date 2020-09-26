@@ -59,26 +59,24 @@
 
 (defn debug [& args] (.log js/console (apply str args)))
 
-(defn default-content [] [:div "Not content..."])
+(defn default-content [] [:div "[No content defined...]"])
 
 (def plugin
   {:id         ::template
    :extensions [(pwc/extension-keep-last ::app-icon "Application icon component")
                 (pwc/extension-keep-last ::app-name "Application name")
                 (pwc/extension-keep-last ::topbar-center "Components on the center of the topbar")
-                (pwc/extension-keep-last ::top-row "Components on the center of the topbar")
-                (pwc/extension-keep-last ::topbar-center "Components on the center of the topbar")
                 (pwc/extension-keep-last ::topbar-right "components on the right of the topbar")
                 (pwc/extension-keep-last ::on-logo-click
                                          "callback to be called when clicking on the application icon")]
    :beans      {::top-row [ui-top-row
-                           ::app-icon
-                           ::app-name
-                           ::topbar-center
-                           ::topbar-right
-                           ::on-logo-click]
+                            ::app-icon
+                            ::app-name
+                            ::topbar-center
+                            ::topbar-right
+                            ::on-logo-click]
                 ::ui-page-template [ui-page-template ::top-row '?]}
-   ::spa/main-component [::ui-page-template default-content]
+   ::spa/main-component [::ui-page-template [default-content]]
    ::on-logo-click      #(println "on-logo-click not defined")
 
    ::app-icon [:= [:i.ui.envelope.icon]]

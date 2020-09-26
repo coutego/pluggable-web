@@ -3,12 +3,12 @@
 
 (defun pas/rerender ()
   (interactive)
-  (cider-nrepl-sync-request:eval "(pluggable-web.core/remount-root)"))
+  (cider-nrepl-sync-request:eval "(pluggable-web.sample-app/init)"))
 
 (defun pas/reagent-rerender (orig-fun &rest args)
   (let ((res (apply orig-fun args)))
     (sleep-for 0.1)
-    (cider-nrepl-sync-request:eval "(pluggable-web.core/remount-root)")
+    (cider-nrepl-sync-request:eval "(pluggable-web.sample-app/init)")
     res))
 
 (advice-add 'cider-eval-defun-at-point :around #'pas/reagent-rerender)
