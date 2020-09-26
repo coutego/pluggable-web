@@ -1,4 +1,8 @@
 (defproject pluggable-web "0.1.0-SNAPSHOT"
+  :description "Framework for development of SPAs built on top of Pluggable and Injectable"
+  :license {:name "EUPL-1.2 or later"
+            :url  "https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12"}
+
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.764"
                   :exclusions [com.google.javascript/closure-compiler-unshaded
@@ -6,12 +10,9 @@
                                org.clojure/google-closure-library-third-party]]
                  [thheller/shadow-cljs "2.9.3"]
                  [reagent "0.10.0"]
-                 [metosin/reitit "0.5.5"]
-                 [re-frame "0.12.0"]
-                 [day8.re-frame/tracing "0.5.5"]]
+                 [metosin/reitit "0.5.5"]]
 
   :plugins [[lein-shadow "0.2.0"]
-            [lein-garden "0.3.0"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.9.0"
@@ -26,6 +27,7 @@
                                     "test/js"
                                     "resources/public/css"]
 
+
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"
                              :linux   "xdg-open"}}}
@@ -36,14 +38,7 @@
                                :output-dir "resources/public/js/compiled"
                                :asset-path "/js/compiled"
                                :modules {:app {:init-fn pluggable-web.sample-app/init
-                                               :preloads [devtools.preload
-                                                          day8.re-frame-10x.preload]}}
-                               :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
-                                                                          day8.re-frame.tracing.trace-enabled? true}
-                                                        :external-config {}}}
-                               :release {:build-options
-                                         {:ns-aliases
-                                          {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
+                                               :preloads [devtools.preload]}}
 
                                :devtools {:http-root "resources/public"
                                           :http-port 8280}}
@@ -73,12 +68,7 @@
 
   :profiles
   {:dev
-   {:dependencies [[binaryage/devtools "1.0.0"]
-                   [day8.re-frame/re-frame-10x "0.6.5"]]
-    :source-paths ["dev"]}
-
-   :prod {}}
-
-
-
-  :prep-tasks [["garden" "once"]])
+   {:dependencies [[binaryage/devtools "1.0.0"]]
+    :source-paths ["dev"]
+   
+      :prod {}}})
