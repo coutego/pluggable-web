@@ -2,7 +2,8 @@
   (:require [reagent.core :as r]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
-            [pluggable-web.template.core :as template]))
+            [pluggable-web.template.core :as template]
+            [pluggable-web.spa.core :as spa]))
 
 (defn debug [& args]
   (println "==============================================")
@@ -21,19 +22,19 @@
   [:h1 "Error: no page has been defined"])
 
 (defn- current-page [router template]
-     (let [curr @(-current-route router)
-           curr (if-not curr
-                   (do
-                     (go-home router)
-                     @(-current-route router))
-                   curr)]
-       [template
-        [:div
-         [:div
-          (if curr
-            (let [view (:view (:data curr))]
-              (view curr))
-            [ui-no-page-defined router])]]]))
+  (let [curr @(-current-route router)
+        curr (if-not curr
+                (do
+                  (go-home router)
+                  @(-current-route router))
+                curr)]
+    [template
+     [:div
+      [:div
+       (if curr
+         (let [view (:view (:data curr))]
+           (view curr))
+         [ui-no-page-defined router])]]]))
 
 (defn- ui-home-page []
   [:div
@@ -108,8 +109,7 @@
 
 (def plugin
   {:id         ::routing
-   :beans      {:main-component [vector #'current-page ::router ::template/ui-page-template]
-                ::router        {:constructor [#'create-router]
+   :beans      {::router        {:constructor [#'create-router]
                                  :mutators    [[#'init-router ::routes]]}
                 ::about-page    about-page}
    :extensions [{:key     ::home-page
@@ -122,4 +122,5 @@
    ::routes    [["/about"
                  {:name ::about-page
                   :view ::about-page}]]
-   ::home-page #'ui-home-page})
+   ::home-page #'ui-home-page
+   ::spa/main-component [vector #'current-page ::router ::template/ui-page-template]})
