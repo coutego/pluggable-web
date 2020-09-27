@@ -2,7 +2,7 @@
   (:require
    [reagent.core :as r]
    [pluggable.core :as plugins]
-   [pluggable-web.core :as pwc]
+   [pluggable-injectable.core :as pwc]
    [pluggable-web.spa.core :as spa]))
 
 (defn ui-top-row-entry [on-click & children]
@@ -92,5 +92,5 @@
                       "Notifications"
                       [:span.ui.label {:style {:font-size :xx-small}} 5]]]]
 
-   ::topbar-right [:= [ui-login-top-row]]
+   ::topbar-right [:= [#'ui-login-top-row]]
    :deps [spa/plugin]})

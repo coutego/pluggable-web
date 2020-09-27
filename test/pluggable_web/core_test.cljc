@@ -1,5 +1,5 @@
 (ns pluggable-web.core-test
-  (:require [pluggable-web.core :as sut]
+  (:require [pluggable-injectable.core :as sut]
             [clojure.spec.alpha :as s]
             #?(:clj [clojure.test :as t :refer [deftest testing is]]
                :cljs [cljs.test :as t :include-macros true :refer [deftest testing is]]))

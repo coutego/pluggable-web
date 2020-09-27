@@ -2,7 +2,7 @@
  (:require [injectable.core :as inj]
            [injectable.container :as injcnt]
            [pluggable.core :as plug-core]
-           [pluggable-web.core :as pwc]
+           [pluggable-injectable.core :as pwc]
            [reagent.dom :as rdom]))
 
 (defn debug [& args] (comment (.log js/console (apply str args))))

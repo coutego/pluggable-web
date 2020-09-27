@@ -1,4 +1,4 @@
-(ns pluggable-web.core
+(ns pluggable-injectable.core
   "Plugin and plugin loader helper functions that implement an extension
    system based on Injectable containers.
 
