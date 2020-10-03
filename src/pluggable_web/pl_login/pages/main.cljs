@@ -1,14 +1,11 @@
-(ns pluggable-web.login.pages.main
-  (:require [pluggable-web.login.core :as c]))
+(ns pluggable-web.pl-login.pages.main)
 
 (defn- show-user [u]
   [:li
    [:a
     {:key (:name u)
      :href :#
-     :on-click (fn [e]
-                 (.preventDefault e)
-                 (c/>log-in-user u))}
+     :on-click #(js/alert "Not implemented")}
     (:name u)
     " "
     (:surname u)
@@ -28,18 +25,15 @@
   [:div.middle.aligned.column
    {:style {:text-align :center}}
    [:div.ui.blue.button
-    {:on-click (fn [e]
-                 (.preventDefault e)
-                 (c/>log-in-user nil))}
-
+    {:on-click #(js/alert "Not implemented")}
     "Logout"]])
 
 (def users
   [{:name "John" :surname "Doe" :roles [:admin]}
    {:name "Anthony" :surname "Suriman" :roles [:admin :user]}])
 
-(defn- page-comp []
-  [:div
+(defn ui-login-page []
+  [:<>
    [:h1 "Login / Logout"]
    [:div.ui.placeholder.segment
     [:div.ui.two.column.very.relaxed.stackable.grid
@@ -49,9 +43,3 @@
        [make-user-list users]]]]
     [:div.column
      [:div.ui.vertical.divider "Or"]]]])
-
-(def page
-  {:id ::login-logout
-   :url "/login-logout"
-   :title "Log in or log out of the application. Manage user settings"
-   :component [#'page-comp]})

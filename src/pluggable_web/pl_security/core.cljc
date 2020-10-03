@@ -1,4 +1,5 @@
-(ns pluggable-web.pl-security.core)
+(ns pluggable-web.pl-security.core
+  (:require [pluggable-injectable.core :as pwc]))
 
 (defprotocol IUserRoles
   (-roles [_]))
@@ -10,20 +11,20 @@
   (some #(= %1 rol) (roles this)))
 
 (defn has-any-rol? [this roles]
-  (some #(has-role? this %) roles))
+  (some #(has-rol? this %) roles))
 
 (defn has-all-roles? [this roles]
-  (reduce #(and %1 (has-role? this %2)) true roles))
+  (reduce #(and %1 (has-rol? this %2)) true roles))
 
 (defrecord NilUserRoles []
   IUserRoles
   (-roles [_] []))
 
 (defn ui-when-rol [srv rol & body]
-  (when (has-role? srv rol) body))
+  (when (has-rol? srv rol) body))
 
 (defn ui-when-any-rol [srv roles & body]
-  (when (has-any-role? srv roles) body))
+  (when (has-any-rol? srv roles) body))
 
 (defn ui-when-all-roles [srv roles & body]
   (when (has-all-roles? srv roles) body))
@@ -32,7 +33,7 @@
   (if (has-rol? srv rol) content error))
 
 (defn ui-require-any-rol [srv roles content error]
-  (if (has-any-roles? srv roles) content error))
+  (if (has-any-rol? srv roles) content error))
 
 (defn ui-require-all-roles [srv roles content error]
   (if (has-all-roles? srv roles) content error))

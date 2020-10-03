@@ -12,3 +12,4 @@
 
    ::template/app-icon [:= [:i.ui.circle.icon]]
    ::template/app-name [:= [:div "Sample app"]]})
+
