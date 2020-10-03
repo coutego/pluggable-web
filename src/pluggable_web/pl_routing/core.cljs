@@ -1,9 +1,9 @@
-(ns pluggable-web.routing.core
+(ns pluggable-web.pl-routing.core
   (:require [reagent.core :as r]
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
-            [pluggable-web.template.core :as template]
-            [pluggable-web.spa.core :as spa]))
+            [pluggable-web.pl-template.core :as template]
+            [pluggable-web.pl_spa.core :as spa]))
 
 (defn debug [& args]
   (println "==============================================")

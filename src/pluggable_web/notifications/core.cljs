@@ -2,8 +2,8 @@
   (:require [reagent.core :as r]
             [pluggable-web.notifications.pages.main :as notifications]
             [pluggable-web.notifications.api :as api]
-            [pluggable-web.template.core :as template]
-            [pluggable-web.routing.core :as routing]))
+            [pluggable-web.pl-template.core :as template]
+            [pluggable-web.pl-routing.core :as routing]))
 
 (def plugin
   {:id     ::notifications

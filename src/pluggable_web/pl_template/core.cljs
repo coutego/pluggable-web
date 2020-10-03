@@ -1,9 +1,9 @@
-(ns pluggable-web.template.core
+(ns pluggable-web.pl-template.core
   (:require
    [reagent.core :as r]
    [pluggable.core :as plugins]
    [pluggable-injectable.core :as pwc]
-   [pluggable-web.spa.core :as spa]))
+   [pluggable-web.pl_spa.core :as spa]))
 
 (defn ui-top-row-entry [on-click & children]
   (let [on-click (or on-click (fn []))]

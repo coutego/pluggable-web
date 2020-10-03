@@ -1,8 +1,8 @@
 (ns pluggable-sample-app.core
   (:require [pluggable-injectable.core :as pic]
-            [pluggable-web.spa.core :as spa]
-            [pluggable-web.template.core :as template]
-            [pluggable-web.routing.core :as routing]
+            [pluggable-web.pl_spa.core :as spa]
+            [pluggable-web.pl-template.core :as template]
+            [pluggable-web.pl-routing.core :as routing]
             [pluggable-web.notifications.core :as notifications]
             [pluggable-sample-app.home-plugin.core :as sample-app]))
 

@@ -1,6 +1,6 @@
-(ns pluggable-web.sample-app.core
-  (:require [pluggable-web.routing.core :as routing]
-            [pluggable-web.template.core :as template]))
+(ns pluggable-web.pl-sample-app.core
+  (:require [pluggable-web.pl-routing.core :as routing]
+            [pluggable-web.pl-template.core :as template]))
 
 (defn on-home-click [router]
   (fn [] (routing/go-home router)))

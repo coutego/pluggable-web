@@ -1,6 +1,6 @@
 (ns pluggable-web.notifications.pages.main
   (:require [pluggable-web.notifications.api :as api]
-            [pluggable-web.routing.core :as routing]))
+            [pluggable-web.pl-routing.core :as routing]))
 
 (def icon-color :#07b)
 (def style-icon {:style {:color        icon-color
