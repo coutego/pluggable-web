@@ -18,4 +18,4 @@
 (define-clojure-indent
   (>defn 1))
 
-(super-save-stop) ;; FIXME: check that this works as intended
+;(super-save-stop) ;; FIXME: check that this works as intended
