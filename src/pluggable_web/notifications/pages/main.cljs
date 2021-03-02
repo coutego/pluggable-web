@@ -16,7 +16,8 @@
      (:title n)]]
    [:td (:description n)]
    [:td [:a
-         {:on-click #(api/delete-notification srv (:id n))}
+         {:href :#
+          :on-click #(api/delete-notification srv (:id n))}
          [:i.icon.trash style-icon]]]])
 
 (defn ui-notifications-page [router srv]
@@ -39,4 +40,4 @@
 
 (defn ui-view-notification-page [router srv]
   [:h1 "New notification"]
-  [:div "Not implemented"])
+  [:div "Not XXXXX implemented"])
