@@ -1,9 +1,10 @@
 (ns pluggable-web.pl_spa.core
- (:require [injectable.core :as inj]
-           [injectable.container :as injcnt]
-           [pluggable.core :as plug-core]
-           [pluggable-injectable.core :as pwc]
-           [reagent.dom :as rdom]))
+  (:require [injectable.core :as inj]
+            [injectable.container :as injcnt]
+            [pluggable.core :as plug-core]
+            [pluggable-injectable.core :as pwc]
+            [reagent.dom :as rdom]
+            [reagent.core :as r]))
 
 (defn debug [& args] (comment (.log js/console (apply str args))))
 
@@ -22,10 +23,22 @@
      "If you are seeing this message, it means you have not declared a :main-component in "
      "any of your plugins. Most likely, the reason is that your plugins have not been loaded.")]])
 
+(defn ui-error-handler [& children]
+  (let [err-state (r/atom nil)]
+    (r/create-class
+     {:display-name "ErrBoundary"
+      :component-did-catch (fn [err info]
+                             (reset! err-state [err info]))
+      :reagent-render (fn [& children]
+                        (if (nil? @err-state)
+                          (into [:<>] children)
+                          (let [[_ info] @err-state]
+                            [:pre [:code (pr-str info)]])))})))
+
 (defn render-app! [main-component]
   (let [root-el       (.getElementById js/document "app")]
     (rdom/unmount-component-at-node root-el)
-    (rdom/render main-component root-el)))
+    (rdom/render [ui-error-handler main-component] root-el)))
 
 (defn main-component-ext-handler [db vals]
   (let [all-vals vals
