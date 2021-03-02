@@ -17,7 +17,7 @@
    [:td (:description n)]
    [:td [:a
          {:href :#
-          :on-click #(api/delete-notification srv (:id n))}
+          :on-click (fn [e] (.preventDefault e) (api/delete-notification srv (:id n)))}
          [:i.icon.trash style-icon]]]])
 
 (defn ui-notifications-page [router srv]
