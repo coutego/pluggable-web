@@ -6,15 +6,22 @@
    [pluggable-web.pl_spa.core :as spa]))
 
 (defn ui-top-row-entry [on-click & children]
-  (let [on-click (or on-click (fn []))]
-    (vec
-     (concat
-      [:a.header.item
-       {:on-click (fn [e]
-                    (.preventDefault e)
-                    (on-click))
-        :style {:font-size :small}}]
-      children))))
+  (let [on-click (or on-click (fn []))
+        hover (r/atom false)]
+    (fn []
+      (vec
+       (concat
+        [:a.header.item
+         {:on-click (fn [e]
+                      (.preventDefault e)
+                      (on-click))
+          :on-mouse-over #(reset! hover true)
+          :on-mouse-out  #(reset! hover false)
+          :style
+          (merge {:font-size :small}
+                 (if @hover
+                   {:border-bottom "2px solid #cde"}))}]
+        children)))))
 
 (defn- ui-login-top-row-v [user-initials]
   [:div.ui.text.container
