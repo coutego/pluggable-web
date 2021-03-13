@@ -5,6 +5,8 @@
    [pluggable-injectable.core :as pwc]
    [pluggable-web.pl_spa.core :as spa]))
 
+(def color-background-top "#f5f2ee")
+
 (defn ui-top-row-entry [on-click & children]
   (let [on-click (or on-click (fn []))
         hover (r/atom false)]
@@ -20,7 +22,8 @@
           :style
           (merge {:font-size :small}
                  (if @hover
-                   {:border-bottom "2px solid #cde"}))}]
+                   {:border-bottom "2px solid #dde"}
+                   {:border-bottom (str "2px solid " color-background-top)}))}]
         children)))))
 
 (defn- ui-login-top-row-v [user-initials]
@@ -40,7 +43,7 @@
      {:style {:position :sticky
               :top 0
               :z-index :1
-              :background-color :#f5f2ee
+              :background-color (keyword color-background-top)
               :border :none
               :box-shadow "0 -1px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.1), 0 10px 30px #f3ece8"
               :opacity :93%
