@@ -34,10 +34,10 @@
           :style
           (merge {:font-size :small
                   :padding-bottom :11px
-                  :margin-bottom :-9px}
+                  :margin-bottom :-10px}
                  (if @hover
-                   {:border-bottom "2px solid #c0d0e0"}
-                   {:border-bottom (str "2px solid " color-background-top)}))}]
+                   {:border-bottom "1px solid rgba(0,0,0,0.03)"}
+                   {:border-bottom (str "1px solid " color-background-top)}))}]
         children)))))
 
 (defn- ui-login-top-row-v [user-initials]
