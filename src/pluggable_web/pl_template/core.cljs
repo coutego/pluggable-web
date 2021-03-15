@@ -7,6 +7,18 @@
 
 (def color-background-top "#f5f2ee")
 
+(defonce scrolled?
+  (let [ret       (r/atom false)
+        on-scroll (fn []
+                    (let [sc      (.. js/window -pageYOffset)
+                          new-val (> sc 15)]
+                      (reset! ret (reset! ret new-val))))
+        _         (.addEventListener js/window
+                                     "scroll"
+                                     on-scroll
+                                     true)]
+    ret))
+
 (defn ui-top-row-entry [on-click & children]
   (let [on-click (or on-click (fn []))
         hover (r/atom false)]
@@ -20,9 +32,11 @@
           :on-mouse-over #(reset! hover true)
           :on-mouse-out  #(reset! hover false)
           :style
-          (merge {:font-size :small}
+          (merge {:font-size :small
+                  :padding-bottom :11px
+                  :margin-bottom :-9px}
                  (if @hover
-                   {:border-bottom "2px solid #dde"}
+                   {:border-bottom "2px solid #c0d0e0"}
                    {:border-bottom (str "2px solid " color-background-top)}))}]
         children)))))
 
@@ -34,36 +48,40 @@
       [:a.ui.blue.label user-initials])]])
 
 (defn- ui-login-top-row []
-  [ui-login-top-row-v "PAS"])
+  [ui-login-top-row-v "UNK"])
 
 (defn- ui-top-row [app-icon app-name topbar-center topbar-right on-goto-home-page]
-  (vec
-   (concat
-    [:div.ui.text.menu
-     {:style {:position :sticky
-              :top 0
-              :z-index :1
-              :background-color (keyword color-background-top)
-              :border :none
-              :box-shadow "0 -1px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.1), 0 10px 30px #f3ece8"
-              :opacity :93%
-              :margin :0}}]
-    [[:div.ui.text.container
-      [:a.header.item
-       {:on-click (fn [e]
-                    (.preventDefault e)
-                    (when on-goto-home-page (on-goto-home-page)))}
-       app-icon
-       app-name]]
-     topbar-center
-     topbar-right])))
+  (fn [app-icon app-name topbar-center topbar-right on-goto-home-page]
+      (vec
+       (concat
+        [:div.ui.text.menu
+         {:style {:position :sticky
+                  :top 0
+                  :z-index :1
+                  :background-color (keyword color-background-top)
+                  :box-shadow
+                  (if @scrolled?
+                    " 0 2px 0px rgba(0,0,0,0.03)"
+                    :none)
+                  :opacity :95%
+                  :margin :0}}]
+        [[:div.ui.text.container
+          [:a.header.item
+           {:on-click (fn [e]
+                        (.preventDefault e)
+                        (when on-goto-home-page (on-goto-home-page)))}
+           app-icon
+           app-name]]
+         topbar-center
+         topbar-right]))))
 
 (defn ui-page-template [top-row contents]
-  [:div.ui.container {:style {:background-color :#fff}}
+  [:div.ui.container {:style {:background-color :#f5f2ee}}
    top-row
    [:div.ui {:style {:padding :2em
+                     :background-color :#f5f2ee
                      :padding-top :0.8em
-                     :box-shadow "0 -1px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.1), 0 10px 30px #f3ece8"
+                                        ;:box-shadow "0 -1px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.1), 0 10px 30px #f3ece8"
                      :border-radius "0.2em 0.2em 0 0"}}
     contents]])
 
@@ -79,12 +97,12 @@
                 (pwc/extension-keep-last ::topbar-right "components on the right of the topbar")
                 (pwc/extension-keep-last ::on-logo-click
                                          "callback to be called when clicking on the application icon")]
-   :beans      {::top-row [ui-top-row
-                            ::app-icon
-                            ::app-name
-                            ::topbar-center
-                            ::topbar-right
-                            ::on-logo-click]
+   :beans      {::top-row [(fn [a b c d e] [ui-top-row a b c d e])
+                           ::app-icon
+                           ::app-name
+                           ::topbar-center
+                           ::topbar-right
+                           ::on-logo-click]
                 ::ui-page-template [ui-page-template ::top-row '?]}
    ::spa/main-component [::ui-page-template [default-content]]
    ::on-logo-click      #(println "on-logo-click not defined")
