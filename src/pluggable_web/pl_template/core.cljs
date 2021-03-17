@@ -1,11 +1,10 @@
 (ns pluggable-web.pl-template.core
   (:require
    [reagent.core :as r]
-   [pluggable.core :as plugins]
    [pluggable-injectable.core :as pwc]
    [pluggable-web.pl_spa.core :as spa]))
 
-(def color-background-top "#f5f2ee")
+(def color-background-top "#f9f8fa")
 
 (defonce scrolled?
   (let [ret       (r/atom false)
@@ -50,7 +49,7 @@
 (defn- ui-login-top-row []
   [ui-login-top-row-v "UNK"])
 
-(defn- ui-top-row [app-icon app-name topbar-center topbar-right on-goto-home-page]
+(defn- ui-top-row []
   (fn [app-icon app-name topbar-center topbar-right on-goto-home-page]
       (vec
        (concat
@@ -63,7 +62,10 @@
                   (if @scrolled?
                     " 0 2px 0px rgba(0,0,0,0.03)"
                     :none)
-                  :opacity :95%
+                  :opacity
+                  (if @scrolled?
+                        :97%
+                    :100%)
                   :margin :0}}]
         [[:div.ui.text.container
           [:a.header.item
@@ -76,10 +78,16 @@
          topbar-right]))))
 
 (defn ui-page-template [top-row contents]
-  [:div.ui.container {:style {:background-color :#f5f2ee}}
+  [:div.ui.container
+   {:style
+    {:background-color :#f9f8fa
+     :font-family "proxima-nova, sans-serif"
+     :font-style :normal
+     :font-weight :100}}
+
    top-row
    [:div.ui {:style {:padding :2em
-                     :background-color :#f5f2ee
+                     :background-color :#f9f8fa
                      :padding-top :0.8em
                                         ;:box-shadow "0 -1px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.1), 0 10px 30px #f3ece8"
                      :border-radius "0.2em 0.2em 0 0"}}
