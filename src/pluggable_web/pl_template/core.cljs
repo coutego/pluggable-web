@@ -80,11 +80,7 @@
 (defn ui-page-template [top-row contents]
   [:div.ui.container
    {:style
-    {:background-color :#f9f8fa
-     :font-family "proxima-nova, sans-serif"
-     :font-style :normal
-     :font-weight :100}}
-
+    {:background-color :#f9f8fa}}
    top-row
    [:div.ui {:style {:padding :2em
                      :background-color :#f9f8fa
