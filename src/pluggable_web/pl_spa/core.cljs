@@ -29,6 +29,7 @@
      {:display-name "ErrBoundary"
       :component-did-catch (fn [err info]
                              (reset! err-state [err info]))
+      :get-derived-state-from-error (fn [error] #js {:error error})
       :reagent-render (fn [& children]
                         (if (nil? @err-state)
                           (into [:<>] children)

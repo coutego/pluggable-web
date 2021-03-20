@@ -21,19 +21,40 @@
 (defn- ui-no-page-defined [router]
   [:h1 "Error: no page has been defined"])
 
+(defn display-error [e]
+  [:div
+   {:style
+    {:padding "2em 3em 2em 3em"
+     :margin :2em
+     :border-radius :0.8em
+     :border "1px solid red"
+     :background :#fff6f6}}
+   [:h1 [:i.ui.bug.icon] "Oops! You have found a bug..."]
+   [:p
+     "There is a bug in the implementation of this page. "
+     "The internal error message is:"]
+   [:p {:style {:padding :1em
+                :color :#965
+                :border-left "4px solid #A87"}}
+    (str e)]])
+
 (defn- current-page [router template]
   (let [curr @(-current-route router)
         curr (if-not curr
-                (do
-                  (go-home router)
-                  @(-current-route router))
-                curr)]
+               (do
+                 (go-home router)
+                 @(-current-route router))
+               curr)]
     [template
      [:div
       [:div
        (if curr
          (let [view (:view (:data curr))]
-           (view curr))
+           (try
+             (cond
+               (vector? view) view
+               :else (view))
+            (catch js/Error e [display-error e])))
          [ui-no-page-defined router])]]]))
 
 (defn- ui-home-page []
@@ -83,16 +104,17 @@
 (defn- add-route-to-db [db r] ;; FIXME: this would be simpler if used inner beans
   (let [h     (first r)
         props (second r)
-        view  (:view props)
-        bean? (keyword? view)
-        bean  (if bean? (create-bean view h props))]
-    (as-> db it
-      (if bean?
-        (-> it
+        view  (:view props)]
+    (println "add-route-to-db: view = " view)
+    (cond
+      (keyword? view)
+      (let [bean (create-bean view h props)]
+        (-> db
             (assoc-in [:beans (:key bean)] (:val bean))
-            (update-in [:beans ::routes] #(conj (or % [vector]) (:key bean))))
-        (-> it
-            (update-in [:beans ::routes] #(conj (or % [vector]) r)))))))
+            (update-in [:beans ::routes] #(conj (or % [vector]) (:key bean)))))
+
+      :else
+      (update-in db [:beans ::routes] #(conj (or % [vector]) r)))))
 
 (defn ext-handler-home-page [db vals]
   (add-route-to-db
