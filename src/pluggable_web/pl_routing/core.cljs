@@ -53,8 +53,8 @@
            (try
              (cond
                (vector? view) view
-               :else (view))
-            (catch js/Error e [display-error e])))
+               :else (view (:parameters curr)))
+             (catch js/Error e [display-error e])))
          [ui-no-page-defined router])]]]))
 
 (defn- ui-home-page []
@@ -105,7 +105,6 @@
   (let [h     (first r)
         props (second r)
         view  (:view props)]
-    (println "add-route-to-db: view = " view)
     (cond
       (keyword? view)
       (let [bean (create-bean view h props)]
