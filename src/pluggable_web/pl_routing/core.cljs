@@ -11,9 +11,19 @@
   (println "=============================================="))
 
 (defprotocol IRouter
-  (href [_ route-id])
-  (goto [_ route-id])
+  (-href [_ route-id params query])
+  (-goto [_ route-id params query])
   (go-home [_]))
+
+(defn goto
+  ([this route_id params query] (-goto this route_id params query))
+  ([this route_id params] (goto this route_id params {}))
+  ([this route_id ] (goto this route_id {})))
+
+(defn href
+  ([this route_id params query] (-href this route_id params query))
+  ([this route_id params] (href this route_id params {}))
+  ([this route_id ] (href this route_id {})))
 
 (defprotocol IInternalRouter
   (-current-route [_]))
@@ -86,8 +96,8 @@
 (defn- create-router []
   (reify
     IRouter
-    (href [_ route-id] (rfe/href route-id))
-    (goto [_ route-id] (rfe/push-state route-id))
+    (-href [_ route-id params query] (rfe/href route-id params query))
+    (-goto [_ route-id params query] (rfe/push-state route-id params query))
     (go-home [this] (goto this ::home-page))
 
     IInternalRouter
