@@ -4,7 +4,7 @@
    [pluggable-injectable.core :as pwc]
    [pluggable-web.pl_spa.core :as spa]))
 
-(def color-background-top "#f9f8fa")
+(def color-background-top "#f6f8fb")
 
 (defonce scrolled?
   (let [ret       (r/atom false)
@@ -80,10 +80,10 @@
 (defn ui-page-template [top-row contents]
   [:div.ui.container
    {:style
-    {:background-color :#f9f8fa}}
+    {:background-color (keyword color-background-top)}}
    top-row
    [:div.ui {:style {:padding :2em
-                     :background-color :#f9f8fa
+                     :background-color (keyword color-background-top)
                      :padding-top :0.8em
                                         ;:box-shadow "0 -1px 10px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.1), 0 10px 30px #f3ece8"
                      :border-radius "0.2em 0.2em 0 0"}}
