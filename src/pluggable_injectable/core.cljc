@@ -109,25 +109,3 @@
                  :doc doc}
         ret     (if spec (assoc ret :spec spec) ret)]
     ret))
-
-(defn extension-keep-list
-  "Creates an plugin extension that keeps all the associated values defined
-   by all the plugins on a unified list and associates is to the bean with
-   the same key (or bean-key, if it is defined). The values must be passed to
-   the extension as a vector."
-  [key doc & {:keys [reusable? spec bean-key]}]
-  (let [handler (fn [db vals]
-                  (if (not (or (nil? vals) (vector? vals)))
-                    (throw (ex-info
-                            (str
-                             "Extension " key " must be a vector")
-                            {})))
-                  (update-in db
-                             [(if reusable? :reusable-beans :beans)]
-                             key
-                             #(concat (or % []) vals)))
-        ret     {:key     (if bean-key bean-key key)
-                 :handler handler
-                 :doc     doc}
-        ret     (if spec (assoc ret :spec spec) ret)]
-    ret))
