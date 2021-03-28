@@ -74,8 +74,8 @@
                         (when on-goto-home-page (on-goto-home-page)))}
            app-icon
            app-name]]
-         topbar-center
-         topbar-right]))))
+         topbar-center ;; FIXME topbar-center should be inside []
+         [topbar-right]]))))
 
 (defn ui-page-template [top-row contents]
   [:div.ui.container
