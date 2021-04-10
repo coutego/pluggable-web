@@ -1,4 +1,4 @@
-(ns pluggable-web.pl_spa.core
+(ns pluggable-web.pl-spa.core
   (:require [injectable.core :as inj]
             [injectable.container :as injcnt]
             [pluggable.core :as plug-core]

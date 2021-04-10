@@ -3,7 +3,7 @@
             [reitit.frontend :as rf]
             [reitit.frontend.easy :as rfe]
             [pluggable-web.pl-template.core :as template]
-            [pluggable-web.pl_spa.core :as spa]))
+            [pluggable-web.pl-spa.core :as spa]))
 
 (defn debug [& args]
   (println "==============================================")
@@ -89,9 +89,14 @@
    {:use-fragment true})) ;; set to false to enable HistoryAPI
 
 (defonce current-route (r/atom nil))
+(defonce on-route-change-handlers (r/atom []))
 
 (defn- init-router [routes]
-  (init! routes (fn [m] (reset! current-route m))))
+  (init!
+   routes
+   (fn [m]
+     (reset! current-route m)
+     (doall (map (fn [h] (when (fn? h) (h))) @on-route-change-handlers)))))
 
 (defn- create-router []
   (reify
@@ -150,6 +155,7 @@
                 {:key     ::routes
                  :handler ext-handler-routes
                  :doc     "Adds the given list of routes to the routes of the application"}]
+
    ::routes    [["/about"
                  {:name ::about-page
                   :view ::about-page}]]

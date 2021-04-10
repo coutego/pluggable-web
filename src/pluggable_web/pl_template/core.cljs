@@ -2,7 +2,7 @@
   (:require
    [reagent.core :as r]
    [pluggable-injectable.core :as pwc]
-   [pluggable-web.pl_spa.core :as spa]))
+   [pluggable-web.pl-spa.core :as spa]))
 
 (def color-background-top "#f6f8fb")
 
