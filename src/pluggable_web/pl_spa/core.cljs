@@ -23,23 +23,47 @@
      "If you are seeing this message, it means you have not declared a :main-component in "
      "any of your plugins. Most likely, the reason is that your plugins have not been loaded.")]])
 
-(defn ui-error-handler [& children]
-  (let [err-state (r/atom nil)]
+(defn ui-catch-render-error [opts [error error-info]]
+  (let [err-renderer (:err-renderer opts)]
+    (case err-renderer
+      nil
+      [:div {:style {:font-weight :800
+                     :font-style :italic}}
+        "*error*"]
+
+      :debug
+      [:pre [:code (pr-str error)]]
+
+      [err-renderer error error-info])))
+
+(defn ui-catch-render-success [& [opts children :as opts&children]]
+  (let [[opts children] (if (map? opts)
+                          [opts children]
+                          [{} opts&children])]
+    (into [:<>] children)))
+
+(defn ui-catch [& [opts children :as opts&children]]
+  (let [[opts children] (if (map? opts)
+                          [opts children]
+                          [{} opts&children])
+        error-atom      (atom nil)]
     (r/create-class
-     {:display-name "ErrBoundary"
-      :component-did-catch (fn [err info]
-                             (reset! err-state [err info]))
-      :get-derived-state-from-error (fn [error] #js {:error error})
-      :reagent-render (fn [& children]
-                        (if (nil? @err-state)
-                          (into [:<>] children)
-                          (let [[_ info] @err-state]
-                            [:pre [:code (pr-str info)]])))})))
+     {:display-name (or (:boundary-name opts) "ErrBoundary")
+
+      :get-derived-state-from-error
+      (fn [error error-info]
+        (reset! error-atom [error error-info]))
+
+      :reagent-render
+      (fn [& args]
+        (if @error-atom
+          (ui-catch-render-error opts @error-atom)
+          (ui-catch-render-success (first args) (rest args))))})))
 
 (defn render-app! [main-component]
   (let [root-el       (.getElementById js/document "app")]
     (rdom/unmount-component-at-node root-el)
-    (rdom/render [ui-error-handler main-component] root-el)))
+    (rdom/render [ui-catch main-component] root-el)))
 
 (defn main-component-ext-handler [db vals]
   (let [all-vals vals
